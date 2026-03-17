@@ -27,8 +27,18 @@ function App() {
   const [reply, setReply] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [lastSubmittedAt, setLastSubmittedAt] = useState(0)
 
   const handleAskAI = async () => {
+    if (loading) return
+
+    const now = Date.now()
+    if (now - lastSubmittedAt < 3000) {
+      setError('请求太快了，请稍等 3 秒再试')
+      return
+    }
+
+    setLastSubmittedAt(now)
     setLoading(true)
     setError('')
     setReply('')
@@ -37,7 +47,12 @@ function App() {
       const result = await chatWithOpenAI(message)
       setReply(result.reply || '没有返回内容')
     } catch (err) {
-      setError(err.message || '请求失败')
+      const message = err.message || '请求失败'
+      if (message.includes('429')) {
+        setError('AI 服务当前较忙，请稍等 10 秒后再试')
+      } else {
+        setError(message)
+      }
     } finally {
       setLoading(false)
     }
@@ -125,7 +140,11 @@ function App() {
               placeholder="输入你的问题"
             />
             <div className="hero-actions">
-              <button className="primary-button" onClick={handleAskAI} disabled={loading}>
+              <button
+                className="primary-button"
+                onClick={handleAskAI}
+                disabled={loading || !message.trim()}
+              >
                 {loading ? '请求中...' : '发送给 OpenAI'}
               </button>
             </div>

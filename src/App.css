@@ -92,6 +92,13 @@
   font-weight: 700;
 }
 
+.button-disabled,
+.primary-button:disabled,
+.ghost-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .ghost-button {
   background: rgba(255, 255, 255, 0.08);
   color: #eff4f7;
