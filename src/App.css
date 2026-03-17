@@ -143,6 +143,14 @@
   color: #6df0a1;
 }
 
+.api-badge {
+  margin-top: 12px;
+  color: #8ea2af;
+  font-size: 12px;
+  line-height: 1.6;
+  word-break: break-all;
+}
+
 .hero-actions {
   display: flex;
   gap: 12px;

@@ -1,4 +1,5 @@
 import './App.css'
+import { API_BASE_URL } from './api'
 
 const quickLinks = ['推荐', '歌单', '排行榜', '播客', 'MV', '歌手', '直播']
 
@@ -49,6 +50,7 @@ function App() {
         <section className="hero-card">
           <div className="hero-copy">
             <span className="hero-badge">今日推荐</span>
+            <div className="api-badge">Worker API：{API_BASE_URL}</div>
             <h1>把喜欢的歌，装进今天。</h1>
             <p>
               一个 React + Vite 搭出来的音乐首页原型，保留熟悉的音乐平台首页节奏：大推荐位、歌单卡片、榜单和电台分区。
