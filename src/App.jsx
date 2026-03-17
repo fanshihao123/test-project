@@ -1,5 +1,6 @@
 import './App.css'
-import { API_BASE_URL } from './api'
+import { useState } from 'react'
+import { API_BASE_URL, chatWithOpenAI } from './api'
 
 const quickLinks = ['推荐', '歌单', '排行榜', '播客', 'MV', '歌手', '直播']
 
@@ -22,6 +23,26 @@ const radios = [
 ]
 
 function App() {
+  const [message, setMessage] = useState('推荐一首适合写代码时听的歌，并给出一句理由')
+  const [reply, setReply] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleAskAI = async () => {
+    setLoading(true)
+    setError('')
+    setReply('')
+
+    try {
+      const result = await chatWithOpenAI(message)
+      setReply(result.reply || '没有返回内容')
+    } catch (err) {
+      setError(err.message || '请求失败')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="page-shell">
       <header className="topbar">
@@ -29,7 +50,7 @@ function App() {
           <div className="brand-logo">M</div>
           <div>
             <div className="brand-title">MeloBox</div>
-            <div className="brand-subtitle">像 QQ 音乐风格的首页 Demo</div>
+            <div className="brand-subtitle">React + Vite + Cloudflare Pages + Worker</div>
           </div>
         </div>
         <nav className="top-nav" aria-label="主导航">
@@ -53,7 +74,8 @@ function App() {
             <div className="api-badge">Worker API：{API_BASE_URL}</div>
             <h1>把喜欢的歌，装进今天。</h1>
             <p>
-              一个 React + Vite 搭出来的音乐首页原型，保留熟悉的音乐平台首页节奏：大推荐位、歌单卡片、榜单和电台分区。
+              一个 React + Vite 搭出来的音乐首页原型，同时接入 Cloudflare Worker 和 OpenAI，
+              用来完成 Pages + Worker 的课程作业演示。
             </p>
             <div className="hero-actions">
               <button className="primary-button">立即播放</button>
@@ -84,6 +106,37 @@ function App() {
                 <span>沉浸音质</span>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="section-block ai-block">
+          <div className="section-header">
+            <div>
+              <h2>AI 助手 Demo</h2>
+              <p>前端调用 Cloudflare Worker，Worker 再请求 OpenAI</p>
+            </div>
+          </div>
+
+          <div className="ai-panel">
+            <textarea
+              className="ai-input"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="输入你的问题"
+            />
+            <div className="hero-actions">
+              <button className="primary-button" onClick={handleAskAI} disabled={loading}>
+                {loading ? '请求中...' : '发送给 OpenAI'}
+              </button>
+            </div>
+
+            {error ? <div className="ai-error">{error}</div> : null}
+            {reply ? (
+              <div className="ai-reply">
+                <strong>AI 回复</strong>
+                <p>{reply}</p>
+              </div>
+            ) : null}
           </div>
         </section>
 

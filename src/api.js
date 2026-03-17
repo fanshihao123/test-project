@@ -12,14 +12,20 @@ export async function request(path, options = {}) {
     ...options,
   })
 
+  const data = await response.json()
+
   if (!response.ok) {
-    throw new Error(`Request failed: ${response.status}`)
+    throw new Error(
+      typeof data?.error === 'string' ? data.error : `Request failed: ${response.status}`
+    )
   }
 
-  const contentType = response.headers.get('content-type') || ''
-  if (contentType.includes('application/json')) {
-    return response.json()
-  }
+  return data
+}
 
-  return response.text()
+export async function chatWithOpenAI(message) {
+  return request('/api/chat', {
+    method: 'POST',
+    body: JSON.stringify({ message }),
+  })
 }
