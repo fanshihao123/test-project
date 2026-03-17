@@ -461,4 +461,8 @@
   background: rgba(255, 107, 107, 0.08);
   border: 1px solid rgba(255, 107, 107, 0.18);
   color: #ffb3b3;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
 }

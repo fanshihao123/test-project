@@ -15,9 +15,15 @@ export async function request(path, options = {}) {
   const data = await response.json()
 
   if (!response.ok) {
-    throw new Error(
-      typeof data?.error === 'string' ? data.error : `Request failed: ${response.status}`
+    const error = new Error(
+      data?.openai_error?.error?.message ||
+        data?.error?.message ||
+        `Request failed: ${response.status}`
     )
+
+    error.status = response.status
+    error.payload = data
+    throw error
   }
 
   return data

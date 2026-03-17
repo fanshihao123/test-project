@@ -37,7 +37,20 @@ function App() {
       const result = await chatWithOpenAI(message)
       setReply(result.reply || '没有返回内容')
     } catch (err) {
-      setError(err.message || '请求失败')
+      console.error('AI request failed:', err)
+      console.error('AI error payload:', err.payload)
+
+      setError(
+        JSON.stringify(
+          {
+            message: err.message,
+            status: err.status,
+            payload: err.payload,
+          },
+          null,
+          2
+        )
+      )
     } finally {
       setLoading(false)
     }
